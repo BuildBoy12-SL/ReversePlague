@@ -49,7 +49,7 @@ namespace ReversePlague
         /// <summary>
         /// Gets or sets a value indicating whether tutorials can become infected.
         /// </summary>
-        [Description("Whether tutorials can become infeccted.")]
+        [Description("Whether tutorials can become infected.")]
         public bool TutorialInfect { get; set; } = true;
     }
 }
