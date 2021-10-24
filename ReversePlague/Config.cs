@@ -20,7 +20,7 @@ namespace ReversePlague
         /// Gets or sets the maximum distance that a Scp049 must be to an infected player for them to instantly become a Scp0492.
         /// </summary>
         [Description("The maximum distance that a Scp049 must be to an infected player for them to instantly become a Scp0492.")]
-        public float Range { get; set; } = 30f;
+        public float Range { get; set; } = 20f;
 
         /// <summary>
         /// Gets or sets the seconds of delay between Scp049 healing applying to Scps.

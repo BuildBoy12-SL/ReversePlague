@@ -33,7 +33,11 @@ namespace ReversePlague
 
         private static void HealScps(int multiplier)
         {
-            foreach (Player scp049 in Player.Get(RoleType.Scp049))
+            if (multiplier == 0)
+                return;
+
+            IEnumerable<Player> scp049Instances = Player.Get(RoleType.Scp049);
+            foreach (Player scp049 in scp049Instances)
             {
                 if (scp049.IsNpc())
                     continue;
