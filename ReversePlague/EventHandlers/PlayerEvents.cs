@@ -27,10 +27,7 @@ namespace ReversePlague.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDying(DyingEventArgs)"/>
         public void OnDying(DyingEventArgs ev)
         {
-            if (!ev.HitInformation.IsPlayer)
-                return;
-
-            if (ev.Target.IsScp)
+            if (!ev.HitInformation.IsPlayer || ev.Target.IsScp)
                 return;
 
             foreach (Player player in Player.List)

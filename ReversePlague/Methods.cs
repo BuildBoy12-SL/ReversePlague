@@ -35,10 +35,19 @@ namespace ReversePlague
         {
             foreach (Player scp049 in Player.Get(RoleType.Scp049))
             {
+                if (scp049.IsNpc())
+                    continue;
+
                 scp049.Heal(Plugin.Instance.Config.Scp049HealAmount * multiplier);
                 foreach (Player player in Player.List)
                 {
+                    if (player.IsNpc())
+                        continue;
+
                     if (!player.IsScp && !player.IsScp035())
+                        continue;
+
+                    if (player.Role == RoleType.Scp049)
                         continue;
 
                     float distance = (scp049.Position - player.Position).magnitude;
