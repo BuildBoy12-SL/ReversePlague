@@ -7,23 +7,32 @@
 
 namespace ReversePlague.EventHandlers
 {
+    using Exiled.Events.EventArgs;
     using MEC;
 
     /// <summary>
     /// Contains all methods which subscribe from <see cref="Exiled.Events.Handlers.Server"/>.
     /// </summary>
-    public static class ServerEvents
+    public class ServerEvents
     {
-        /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnWaitingForPlayers"/>
-        public static void OnWaitingForPlayers()
+        private CoroutineHandle coroutineHandle;
+
+        /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundEnded(RoundEndedEventArgs)"/>
+        public void OnRoundEnded(RoundEndedEventArgs ev)
         {
-            Methods.InfectedPlayers.Clear();
+            Timing.KillCoroutines(coroutineHandle);
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
-        public static void OnRoundStarted()
+        public void OnRoundStarted()
         {
-            Timing.RunCoroutine(Methods.RunPlague());
+            coroutineHandle = Timing.RunCoroutine(Methods.RunPlague());
+        }
+
+        /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnWaitingForPlayers"/>
+        public void OnWaitingForPlayers()
+        {
+            Timing.KillCoroutines(coroutineHandle);
         }
     }
 }

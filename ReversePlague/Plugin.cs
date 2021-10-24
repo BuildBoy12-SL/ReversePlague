@@ -18,16 +18,13 @@ namespace ReversePlague
     /// </summary>
     public class Plugin : Plugin<Config>
     {
-        private static readonly Plugin InstanceValue = new Plugin();
-
-        private Plugin()
-        {
-        }
+        private PlayerEvents playerEvents;
+        private ServerEvents serverEvents;
 
         /// <summary>
-        /// Gets a static instance of the <see cref="Plugin"/> class.
+        /// Gets the only existing instance of the <see cref="Plugin"/> class.
         /// </summary>
-        public static Plugin Instance { get; } = InstanceValue;
+        public static Plugin Instance { get; private set; }
 
         /// <inheritdoc />
         public override Version RequiredExiledVersion { get; } = new Version(2, 10, 0);
@@ -35,20 +32,32 @@ namespace ReversePlague
         /// <inheritdoc />
         public override void OnEnabled()
         {
-            PlayerHandlers.Dying += PlayerEvents.OnDying;
-            PlayerHandlers.Hurting += PlayerEvents.OnHurting;
-            ServerHandlers.RoundStarted += ServerEvents.OnRoundStarted;
-            ServerHandlers.WaitingForPlayers += ServerEvents.OnWaitingForPlayers;
+            Instance = this;
+
+            playerEvents = new PlayerEvents(this);
+            PlayerHandlers.Dying += playerEvents.OnDying;
+
+            serverEvents = new ServerEvents();
+            ServerHandlers.RoundEnded += serverEvents.OnRoundEnded;
+            ServerHandlers.RoundStarted += serverEvents.OnRoundStarted;
+            ServerHandlers.WaitingForPlayers += serverEvents.OnWaitingForPlayers;
+
             base.OnEnabled();
         }
 
         /// <inheritdoc />
         public override void OnDisabled()
         {
-            PlayerHandlers.Dying -= PlayerEvents.OnDying;
-            PlayerHandlers.Hurting -= PlayerEvents.OnHurting;
-            ServerHandlers.RoundStarted -= ServerEvents.OnRoundStarted;
-            ServerHandlers.WaitingForPlayers -= ServerEvents.OnWaitingForPlayers;
+            PlayerHandlers.Dying -= playerEvents.OnDying;
+            playerEvents = null;
+
+            ServerHandlers.RoundEnded -= serverEvents.OnRoundEnded;
+            ServerHandlers.RoundStarted -= serverEvents.OnRoundStarted;
+            ServerHandlers.WaitingForPlayers -= serverEvents.OnWaitingForPlayers;
+            serverEvents = null;
+
+            Instance = null;
+
             base.OnDisabled();
         }
     }

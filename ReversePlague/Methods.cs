@@ -19,11 +19,6 @@ namespace ReversePlague
     public static class Methods
     {
         /// <summary>
-        /// Gets all of the players who are infected.
-        /// </summary>
-        internal static List<Player> InfectedPlayers { get; } = new List<Player>();
-
-        /// <summary>
         /// Handles the timer of healing all applicable players.
         /// </summary>
         /// <returns>An internal delay.</returns>
@@ -40,18 +35,17 @@ namespace ReversePlague
         {
             foreach (Player scp049 in Player.Get(RoleType.Scp049))
             {
-                scp049.ReferenceHub.playerStats.HealHPAmount((int)scp049.Health + (Plugin.Instance.Config.Scp049HealAmount * multiplier));
+                scp049.Heal(Plugin.Instance.Config.Scp049HealAmount * multiplier);
                 foreach (Player player in Player.List)
                 {
-                    if (!player.IsScp &&
-                        (player.Role != RoleType.Tutorial || !Plugin.Instance.Config.TutorialHeal) &&
-                        !player.IsScp035())
+                    if (!player.IsScp && !player.IsScp035())
                         continue;
 
-                    if (Vector3.Distance(scp049.Position, player.Position) > Plugin.Instance.Config.Range)
+                    float distance = (scp049.Position - player.Position).magnitude;
+                    if (distance > Plugin.Instance.Config.Range)
                         continue;
 
-                    player.ReferenceHub.playerStats.HealHPAmount((int)player.Health + (Plugin.Instance.Config.ScpHealAmount * multiplier));
+                    player.Heal(Plugin.Instance.Config.ScpHealAmount * multiplier);
                 }
             }
         }

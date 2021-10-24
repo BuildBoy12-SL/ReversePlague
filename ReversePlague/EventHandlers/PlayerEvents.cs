@@ -7,47 +7,45 @@
 
 namespace ReversePlague.EventHandlers
 {
+    using Exiled.API.Enums;
     using Exiled.API.Features;
     using Exiled.Events.EventArgs;
-    using UnityEngine;
 
     /// <summary>
     /// Contains all methods which subscribe from <see cref="Exiled.Events.Handlers.Player"/>.
     /// </summary>
-    public static class PlayerEvents
+    public class PlayerEvents
     {
+        private readonly Plugin plugin;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerEvents"/> class.
+        /// </summary>
+        /// <param name="plugin">An instance of the <see cref="Plugin"/> class.</param>
+        public PlayerEvents(Plugin plugin) => this.plugin = plugin;
+
         /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnDying(DyingEventArgs)"/>
-        public static void OnDying(DyingEventArgs ev)
+        public void OnDying(DyingEventArgs ev)
         {
             if (!ev.HitInformation.IsPlayer)
                 return;
 
-            if (!Methods.InfectedPlayers.Contains(ev.Target))
+            if (ev.Target.IsScp)
                 return;
 
-            Methods.InfectedPlayers.Remove(ev.Target);
             foreach (Player player in Player.List)
             {
-                if (player.Role != RoleType.Scp049 || player.IsNpc())
+                if (player.IsNpc() || player.Role != RoleType.Scp049)
                     continue;
 
-                if (Vector3.Distance(ev.Target.Position, player.Position) > Plugin.Instance.Config.Range)
+                float distance = (ev.Target.Position - player.Position).magnitude;
+                if (distance > plugin.Config.Range)
                     continue;
 
                 ev.Target.DropItems();
-                ev.Target.SetRole(RoleType.Scp0492, true);
+                ev.Target.ClearInventory();
+                ev.Target.SetRole(RoleType.Scp0492, SpawnReason.Revived, true);
             }
-        }
-
-        /// <inheritdoc cref="Exiled.Events.Handlers.Player.OnHurting(HurtingEventArgs)"/>
-        public static void OnHurting(HurtingEventArgs ev)
-        {
-            Team team = ev.Target.Team;
-            if (team == Team.SCP || team == Team.RIP || (team == Team.TUT && Plugin.Instance.Config.TutorialInfect))
-                return;
-
-            if (!Methods.InfectedPlayers.Contains(ev.Target))
-                Methods.InfectedPlayers.Add(ev.Target);
         }
     }
 }

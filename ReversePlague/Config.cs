@@ -39,17 +39,5 @@ namespace ReversePlague
         /// </summary>
         [Description("The amount of health all other Scps will gain on the interval.")]
         public int ScpHealAmount { get; set; } = 1;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether tutorials will be healed like Scps.
-        /// </summary>
-        [Description("Whether tutorials will be healed like Scps.")]
-        public bool TutorialHeal { get; set; } = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether tutorials can become infected.
-        /// </summary>
-        [Description("Whether tutorials can become infected.")]
-        public bool TutorialInfect { get; set; } = true;
     }
 }
