@@ -26,13 +26,14 @@ namespace ReversePlague
         {
             while (Round.IsStarted)
             {
-                HealScps(Player.Get(RoleType.Scp0492).Count());
+                HealScps();
                 yield return Timing.WaitForSeconds(Plugin.Instance.Config.Interval);
             }
         }
 
-        private static void HealScps(int multiplier)
+        private static void HealScps()
         {
+            float multiplier = Player.Get(RoleType.Scp0492).Where(ply => !ply.SessionVariables.ContainsKey("IsNPC")).Count();
             if (multiplier == 0)
                 return;
 

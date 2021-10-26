@@ -39,9 +39,11 @@ namespace ReversePlague.EventHandlers
                 if (distance > plugin.Config.Range)
                     continue;
 
+                ev.IsAllowed = false;
                 ev.Target.DropItems();
                 ev.Target.ClearInventory();
                 ev.Target.SetRole(RoleType.Scp0492, SpawnReason.Revived, true);
+                return;
             }
         }
     }
