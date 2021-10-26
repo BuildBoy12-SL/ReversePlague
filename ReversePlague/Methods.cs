@@ -37,8 +37,7 @@ namespace ReversePlague
             if (multiplier == 0)
                 return;
 
-            IEnumerable<Player> scp049Instances = Player.Get(RoleType.Scp049);
-            foreach (Player scp049 in scp049Instances)
+            foreach (Player scp049 in Player.Get(RoleType.Scp049))
             {
                 if (scp049.IsNpc())
                     continue;
