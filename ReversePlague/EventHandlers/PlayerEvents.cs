@@ -35,8 +35,7 @@ namespace ReversePlague.EventHandlers
                 if (player.IsNpc() || player.Role != RoleType.Scp049)
                     continue;
 
-                float distance = (ev.Target.Position - player.Position).magnitude;
-                if (distance > plugin.Config.Range)
+                if ((ev.Target.Position - player.Position).magnitude > plugin.Config.Range)
                     continue;
 
                 ev.IsAllowed = false;
