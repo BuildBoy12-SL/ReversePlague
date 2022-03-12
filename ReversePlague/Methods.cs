@@ -11,29 +11,36 @@ namespace ReversePlague
     using System.Linq;
     using Exiled.API.Features;
     using MEC;
-    using UnityEngine;
 
     /// <summary>
     /// Contains various methods primarily for abstraction.
     /// </summary>
-    public static class Methods
+    public class Methods
     {
+        private readonly Plugin plugin;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Methods"/> class.
+        /// </summary>
+        /// <param name="plugin">An instance of the <see cref="Plugin"/> class.</param>
+        public Methods(Plugin plugin) => this.plugin = plugin;
+
         /// <summary>
         /// Handles the timer of healing all applicable players.
         /// </summary>
         /// <returns>An internal delay.</returns>
-        public static IEnumerator<float> RunPlague()
+        public IEnumerator<float> RunPlague()
         {
             while (Round.IsStarted)
             {
                 HealScps();
-                yield return Timing.WaitForSeconds(Plugin.Instance.Config.Interval);
+                yield return Timing.WaitForSeconds(plugin.Config.Interval);
             }
         }
 
-        private static void HealScps()
+        private void HealScps()
         {
-            float multiplier = Player.Get(RoleType.Scp0492).Where(ply => !ply.SessionVariables.ContainsKey("IsNPC")).Count();
+            float multiplier = Player.List.Count(player => player.Role == RoleType.Scp0492 && !player.SessionVariables.ContainsKey("IsNPC"));
             if (multiplier == 0)
                 return;
 
@@ -42,7 +49,7 @@ namespace ReversePlague
                 if (scp049.IsNpc())
                     continue;
 
-                scp049.Heal(Plugin.Instance.Config.Scp049HealAmount * multiplier);
+                scp049.Heal(plugin.Config.Scp049HealAmount * multiplier);
                 foreach (Player player in Player.List)
                 {
                     if (player.IsNpc())
@@ -55,10 +62,10 @@ namespace ReversePlague
                         continue;
 
                     float distance = (scp049.Position - player.Position).magnitude;
-                    if (distance > Plugin.Instance.Config.Range)
+                    if (distance > plugin.Config.Range)
                         continue;
 
-                    player.Heal(Plugin.Instance.Config.ScpHealAmount * multiplier);
+                    player.Heal(plugin.Config.ScpHealAmount * multiplier);
                 }
             }
         }

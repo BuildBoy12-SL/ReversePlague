@@ -22,22 +22,22 @@ namespace ReversePlague
         private ServerEvents serverEvents;
 
         /// <summary>
-        /// Gets the only existing instance of the <see cref="Plugin"/> class.
+        /// Gets an instance of the <see cref="Methods"/> class.
         /// </summary>
-        public static Plugin Instance { get; private set; }
+        public Methods Methods { get; private set; }
 
         /// <inheritdoc />
-        public override Version RequiredExiledVersion { get; } = new Version(2, 10, 0);
+        public override Version RequiredExiledVersion { get; } = new Version(5, 0, 0);
 
         /// <inheritdoc />
         public override void OnEnabled()
         {
-            Instance = this;
+            Methods = new Methods(this);
 
             playerEvents = new PlayerEvents(this);
             PlayerHandlers.Dying += playerEvents.OnDying;
 
-            serverEvents = new ServerEvents();
+            serverEvents = new ServerEvents(this);
             ServerHandlers.RoundEnded += serverEvents.OnRoundEnded;
             ServerHandlers.RoundStarted += serverEvents.OnRoundStarted;
             ServerHandlers.WaitingForPlayers += serverEvents.OnWaitingForPlayers;
@@ -56,7 +56,7 @@ namespace ReversePlague
             ServerHandlers.WaitingForPlayers -= serverEvents.OnWaitingForPlayers;
             serverEvents = null;
 
-            Instance = null;
+            Methods = null;
 
             base.OnDisabled();
         }

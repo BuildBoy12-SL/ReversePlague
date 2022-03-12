@@ -15,7 +15,14 @@ namespace ReversePlague.EventHandlers
     /// </summary>
     public class ServerEvents
     {
+        private readonly Plugin plugin;
         private CoroutineHandle coroutineHandle;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerEvents"/> class.
+        /// </summary>
+        /// <param name="plugin">An instance of the plugin class.</param>
+        public ServerEvents(Plugin plugin) => this.plugin = plugin;
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundEnded(RoundEndedEventArgs)"/>
         public void OnRoundEnded(RoundEndedEventArgs ev)
@@ -26,7 +33,7 @@ namespace ReversePlague.EventHandlers
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnRoundStarted"/>
         public void OnRoundStarted()
         {
-            coroutineHandle = Timing.RunCoroutine(Methods.RunPlague());
+            coroutineHandle = Timing.RunCoroutine(plugin.Methods.RunPlague());
         }
 
         /// <inheritdoc cref="Exiled.Events.Handlers.Server.OnWaitingForPlayers"/>
